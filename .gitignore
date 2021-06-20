@@ -1,0 +1,7 @@
+# Docker stuff
+/.docker/db/*
+/.docker/nginx/logs/*
+/.docker/php/logs/*
+
+# IDE stuff
+/.idea

@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  www:
+    image: nginx
+    ports:
+      - $NGINX_PORT:80
+    volumes:
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker/nginx/logs:/var/log/nginx/
+      - ./:/usr/share/nginx/html
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
+    volumes:
+      - ./.docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./.docker/php/logs:/var/log/php
+      - ./:/usr/share/nginx/html
+    environment:
+      PHP_IDE_CONFIG: "serverName=laravelddd.test"
+
+  mysql:
+    image: mysql
+    ports:
+      - $MYSQL_DB_PORT_HOST:3306
+    volumes:
+      - .docker/db/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: $MYSQL_DB_NAME
+      MYSQL_ROOT_PASSWORD: $MYSQL_DB_PASSWORD
+
+  mongo:
+    image: mongo
+    ports:
+      - $MONGODB_PORT_HOST:27017
+    volumes:
+      - .docker/db/mongodb:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGODB_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
